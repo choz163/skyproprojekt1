@@ -22,7 +22,6 @@ isort = "^5.13.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-mypy
 
 [tool.black]
 line-length = 119
