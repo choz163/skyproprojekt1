@@ -15,3 +15,13 @@ def filter_by_state(list_dict: list[dict[str, Any]], state_key: str = 'EXECUTED'
     return list_dict_new
 
 print(filter_by_state(list_dict_exam))
+
+
+def sort_by_date (list_dict: list[dict[str, Any]], optional_param: bool = True) -> list[dict[str, Any]]:
+    """Функция, которая перебирает словари и возвращает отсортированный список"""
+
+
+    list_dict_sorted = sorted(list_dict, key=lambda x: x["date"], reverse =optional_param)
+    return list_dict_sorted
+
+print(sort_by_date(list_dict_exam))
