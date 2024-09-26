@@ -2,7 +2,7 @@
 
 ## Описание:
 
-SkyproProject - это учебный проект на Python.
+SkyproProject - это учебный проект на Python. 
 
 ## Установка:
 
