@@ -4,6 +4,7 @@ from functools import wraps
 def log(filename=None):
     """Декоратор автоматически логирует начало и конец выполнения функции,
     а также ее результаты или возникшие ошибки."""
+
     def dekorator(my_function):
         @wraps(my_function)
         def wrapper(*args, **kwargs):
@@ -23,6 +24,7 @@ def log(filename=None):
                 except Exception as e:
                     with open(filename, "w") as file:
                         file.write(f"{my_function.__name__} error: {e}. Inputs: {args}, {kwargs}")
-        return wrapper
-    return dekorator
 
+        return wrapper
+
+    return dekorator
