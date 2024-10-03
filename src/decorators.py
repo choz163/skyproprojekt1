@@ -1,12 +1,8 @@
-from functools import wraps
-
-
 def log(filename=None):
     """Декоратор автоматически логирует начало и конец выполнения функции,
     а также ее результаты или возникшие ошибки."""
 
     def dekorator(my_function):
-        @wraps(my_function)
         def wrapper(*args, **kwargs):
             if not filename:
                 print(f"{my_function.__name__} started")
