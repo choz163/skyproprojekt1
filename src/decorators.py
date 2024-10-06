@@ -16,6 +16,8 @@ def log(filename=None):
                     print(f'{my_func.__name__} finished')
                 except Exception as e:
                     print(f'{my_func.__name__} error: {e}. Inputs: {args}, {kwargs}')
+                    print(f'{my_func.__name__} error: {e}')
+                    raise
             else:
                 try:
                     result = my_func(*args, **kwargs)
@@ -24,8 +26,7 @@ def log(filename=None):
                 except Exception as e:
                     with open(filename, 'w') as file:
                         file.write(f'{my_func.__name__} error: {e}. Inputs: {args}, {kwargs}')
+                        raise
             return result
         return wrapper
     return dekorator
-
-
