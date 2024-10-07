@@ -1,2 +1,0 @@
-max-line-length = 119
-exclude = .git, __pycache__
