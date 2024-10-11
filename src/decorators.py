@@ -1,6 +1,6 @@
 from functools import wraps
 from pathlib import Path
-from typing import Callable, Any
+from typing import Any, Callable
 
 
 def log(filename: str | Path | None = None) -> Callable:
@@ -16,9 +16,9 @@ def log(filename: str | Path | None = None) -> Callable:
 
             try:
                 result = func(*args, **kwargs)
-                _log(f'{func.__name__} ok. Inputs: {args}, {kwargs}.')
+                _log(f"{func.__name__} ok. Inputs: {args}, {kwargs}.")
             except Exception as e:
-                _log(f'{func.__name__} error: {e}. Inputs: {args}, {kwargs}.')
+                _log(f"{func.__name__} error: {e}. Inputs: {args}, {kwargs}.")
                 raise e
 
             return result
@@ -33,8 +33,8 @@ def log(filename: str | Path | None = None) -> Callable:
             print(msg)
 
         def _log_file(file_path: str | Path, msg: str) -> None:
-            with open(file_path, mode='a', encoding='utf-8') as f:
-                f.write(msg + '\n')
+            with open(file_path, mode="a", encoding="utf-8") as f:
+                f.write(msg + "\n")
 
         return wrapper
 
@@ -47,7 +47,7 @@ def log(filename: str | Path | None = None) -> Callable:
 # def log(filename=None):
 #     """Декоратор автоматически логирует начало и конец выполнения функции,
 #     а также ее результаты или возникшие ошибки."""
-#     def dekorator(my_func):
+#     def decorator(my_func):
 #         @wraps(my_func)
 #         def wrapper(*args, **kwargs):
 #             result = None
@@ -72,4 +72,4 @@ def log(filename: str | Path | None = None) -> Callable:
 #                         raise
 #             return result
 #         return wrapper
-#     return dekorator
+#     return decorator
