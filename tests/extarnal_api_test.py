@@ -1,15 +1,14 @@
+import pytest
 import unittest.mock as mock
 
-import pytest
-import requests
 
 from src.external_api import convert_currency
 
-# amount = 100
-# from_currency = "USD"
-# to_currency = "EUR"
+
+
+# transaction = {"amount": 100, "currency": "EUR"}
 #
-# converted_amount = convert_currency(amount, from_currency, to_currency)
+# converted_amount = convert_currency(transaction)
 #
 # print(converted_amount)
 
@@ -19,14 +18,19 @@ def mock_requests_get():
     with mock.patch("requests.get") as mock_get:
         yield mock_get
 
+def test_convert_currency_success():
+    with mock.patch("requests.get") as mock_get:
+        mock_get.return_value.json.return_value = {"success": True, "result": 100}
+        result = convert_currency({"amount": 100, "currency": "USD"})
+        assert result == 100
 
-def test_valid_conversion(mock_requests_get):
-    mock_requests_get.return_value = mock.Mock(json=lambda: {"success": True, "result": 110.0})
-    result = convert_currency(100, "EUR", "USD")
-    assert result == 110.0
 
+def test_convert_currency_success(mock_requests_get):
+    mock_requests_get.return_value.json.return_value = {"success": True, "result": 100}
+    result = convert_currency({"amount": 100, "currency": "USD"})
+    assert result == 100
 
-def test_invalid_conversion(mock_requests_get):
-    mock_requests_get.return_value = mock.Mock(json=lambda: {"success": False, "error": {"info": "Invalid currency"}})
+def test_convert_currency_error(mock_requests_get):
+    mock_requests_get.return_value.json.return_value = {"success": False, "error": {"info": "Error message"}}
     with pytest.raises(ValueError):
-        convert_currency(100, "EUR", "INVALID")
+        convert_currency({"amount": 100, "currency": "USD"})
