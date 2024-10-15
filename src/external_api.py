@@ -28,3 +28,9 @@ def convert_currency(transaction: dict) -> float:
         return float(data["result"])
     else:
         raise ValueError(f"Ошибка конвертации валюты: {data.get('error', {}).get('info', 'Unknown error')}")
+
+
+# transaction = {"operationAmount": {"amount": 100, "currency": {"code": "USD"}}}
+#
+# converted_amount = convert_currency(transaction)
+# print(converted_amount)
