@@ -4,6 +4,10 @@ import pytest
 
 from src.external_api import convert_currency
 
+# transaction = {"operationAmount": {"amount": 100, "currency": {"code": "USD"}}}
+#
+# converted_amount = convert_currency(transaction)
+# print(converted_amount)
 
 @pytest.fixture
 def mock_requests_get():
