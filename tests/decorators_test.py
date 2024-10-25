@@ -1,12 +1,16 @@
-import pytest
 import unittest.mock as mock
 from pathlib import Path
+
+import pytest
+
 from src.decorators import log  # Замените на правильный путь к вашему модулю
+
 
 @pytest.fixture
 def mock_print():
     with mock.patch("builtins.print") as mock_print:
         yield mock_print
+
 
 def test_log_console(mock_print):
     @log()
@@ -15,6 +19,7 @@ def test_log_console(mock_print):
 
     test_function()
     mock_print.assert_called_once_with("test_function ok. Inputs: (), {}.")
+
 
 def test_log_file():
     file_path = Path("test.log")
@@ -32,6 +37,7 @@ def test_log_file():
 
     file_path.unlink()  # Удаляем файл после теста
 
+
 def test_log_error(mock_print):
     @log()
     def test_function():
@@ -41,6 +47,7 @@ def test_log_error(mock_print):
         test_function()
 
     mock_print.assert_called_once_with("test_function error: Test error. Inputs: (), {}.")
+
 
 def test_log_file_error():
     file_path = Path("test.log")
@@ -58,6 +65,7 @@ def test_log_file_error():
         assert log_message == "test_function error: Test error. Inputs: (), {}.\n"
 
     file_path.unlink()  # Удаляем файл после теста
+
 
 def test_log_decorator_preserves_function_signature():
     def test_function(a: int, b: str) -> float:

@@ -9,6 +9,7 @@ from src.external_api import convert_currency
 # converted_amount = convert_currency(transaction)
 # print(converted_amount)
 
+
 @pytest.fixture
 def mock_requests_get():
     with mock.patch("requests.get") as mock_get:
