@@ -13,7 +13,7 @@ def find_transactions_by_description(transactions, search_string):
 
 def count_transactions_by_category(transactions):
     """Подсчитывает и возвращает количество транзакций по категориям.
-     Категории определяются по первому слову в описании транзакции."""
+    Категории определяются по первому слову в описании транзакции."""
     categories = Counter()
     for transaction in transactions:
         category = transaction["description"].split(" ")[0]
