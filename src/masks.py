@@ -1,13 +1,16 @@
 import logging
 
+
 def get_mask_card_number(card_number: str) -> str:
     """Функция, которая маскирует номер банковской карты"""
     hidden_number = card_number[:21] + "******" + card_number[-4:]
     return hidden_number
 
+
 def get_mask_account(account_number: str) -> str:
     """Функция маскирует цифры номера счета в банке"""
     return f"** {account_number[-4:]}"
+
 
 # Настройка логирования
 logger = logging.getLogger("masks")
@@ -48,6 +51,8 @@ if __name__ == "__main__":
     # Пример вызова функции с ошибкой (некорректный номер счета)
     try:
         masked_account_number_error = get_mask_account("12")  # Слишком короткий номер
-        logger.info(f"Замаскирован номер счета: {masked_account_number_error}")  # Логируем успешное использование функции
+        logger.info(
+            f"Замаскирован номер счета: {masked_account_number_error}"
+        )  # Логируем успешное использование функции
     except Exception as e:
         logger.error(f"Ошибка при маскировке номера счета: {e}")  # Логируем ошибку
