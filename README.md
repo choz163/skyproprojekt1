@@ -72,11 +72,11 @@ python src/main.py
 
 Выбор файла: Пользователь может выбрать один из трех форматов файлов:
 
-JSON - C:\Users\Komp\PycharmProjects\my_project_1\pythonProject1\data\operations.json
+JSON
 
-CSV - C:\Users\Komp\PycharmProjects\my_project_1\pythonProject1\transactions.csv
+CSV
 
-XLSX - C:\Users\Komp\PycharmProjects\my_project_1\pythonProject1\transactions_excel.xlsx
+XLSX
 
 Загрузка данных: Программа загружает данные о транзакциях из выбранного файла. Если файл не найден, программа выводит сообщение об ошибке и завершает работу.
 
