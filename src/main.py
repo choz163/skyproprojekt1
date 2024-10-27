@@ -1,31 +1,62 @@
 import os
+from pathlib import Path
+from typing import Any, Dict, List
 
 from src.bank_transactions import find_transactions_by_description
 from src.decorators import log
+from src.external_api import convert_currency
 from src.generators import filter_by_currency
 from src.masks import get_mask_account
 from src.processing import filter_by_state, sort_by_date
+from src.reading_operations import read_csv, read_excel
 from src.utils import load_operations
-
+from src.widget import mask_account_card
 
 
 @log()
-def main():
+def main() -> None:
+    """Основная функция для работы с банковскими транзакциями."""
+
     # Приветствие пользователя
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
 
-    # Загрузка данных из фиксированного пути
-    file_path = "C:\\Users\\Komp\\PycharmProjects\\my_project_1\\pythonProject1\\data\\operations.json"
+    # Пути к файлам
+    json_file_path: Path = Path(
+        "C:\\Users\\Komp\\PycharmProjects\\my_project_1\\pythonProject1\\data\\operations.json"
+    )
+    csv_file_path: Path = Path("C:\\Users\\Komp\\PycharmProjects\\my_project_1\\pythonProject1\\transactions.csv")
+    excel_file_path: Path = Path(
+        "C:\\Users\\Komp\\PycharmProjects\\my_project_1\\pythonProject1\\transactions_excel.xlsx"
+    )
 
-    if os.path.isfile(file_path):
-        transactions = load_operations(file_path)
-    else:
-        print("Файл не найден")
-        return
+    # Выбор файла
+    while True:
+        file_type: str = input("Выберите тип файла для загрузки (1 - JSON, 2 - CSV, 3 - XLSX): ")
+
+        if file_type == "1":
+            if json_file_path.is_file():
+                transactions: List[Dict[str, Any]] = load_operations(json_file_path)
+                break
+            else:
+                print("JSON файл не найден.")
+        elif file_type == "2":
+            if csv_file_path.is_file():
+                transactions: List[Dict[str, Any]] = read_csv(csv_file_path)
+                break
+            else:
+                print("CSV файл не найден.")
+        elif file_type == "3":
+            if excel_file_path.is_file():
+                transactions: List[Dict[str, Any]] = read_excel(excel_file_path)
+                break
+            else:
+                print("XLSX файл не найден.")
+        else:
+            print("Неверный выбор. Пожалуйста, выберите 1, 2 или 3.")
 
     # Фильтрация по статусу
     while True:
-        status = input(
+        status: str = input(
             "Введите статус, по которому необходимо выполнить фильтрацию."
             " \nДоступные для фильтровки статусы: EXECUTED, CANCELED, PENDING\n"
         )
@@ -35,39 +66,46 @@ def main():
         else:
             print('Статус операции "{}" недоступен.'.format(status))
 
-    # Используем функцию фильтрации по статусу
-    transactions = filter_by_state(transactions, status)
+    transactions = list(filter_by_state(transactions, status))  # Преобразование в список
     print('Операции отфильтрованы по статусу "{}"'.format(status))
 
     # Сортировка по дате
-    sort_by_date_input = input("Отсортировать операции по дате? Да/Нет\n").lower()
+    sort_by_date_input: str = input("Отсортировать операции по дате? Да/Нет\n").lower()
     if sort_by_date_input == "да":
-        transactions = sort_by_date(transactions)
+        sort_order: str = input("Отсортировать по возрастанию или по убыванию?\n").lower()
+        transactions = list(sort_by_date(transactions, sort_order))  # Преобразование в список
 
     # Фильтрация по рублевым транзакциям
-    filter_by_rub_input = input("Выводить только рублевые транзакции? Да/Нет\n").lower()
+    filter_by_rub_input: str = input("Выводить только рублевые транзакции? Да/Нет\n").lower()
     if filter_by_rub_input == "да":
-        transactions = filter_by_currency(transactions, "руб.")
+        transactions = list(filter_by_currency(transactions, "руб."))  # Преобразование в список
 
     # Фильтрация по слову в описании
-    filter_by_description_input = input(
+    filter_by_description_input: str = input(
         "Отфильтровать список транзакций по определенному слову в описании? Да/Нет\n"
     ).lower()
     if filter_by_description_input == "да":
-        search_string = input("Введите слово для поиска: ")
+        search_string: str = input("Введите слово для поиска: ")
         transactions = find_transactions_by_description(transactions, search_string)
 
     # Печать результата
     print("Распечатываю итоговый список транзакций...")
     print("Всего банковских операций в выборке: {}".format(len(transactions)))
     for transaction in transactions:
-        amount = transaction["operationAmount"]["amount"]
-        currency = transaction["operationAmount"]["currency"]["name"]
-        date = transaction["date"]  # Здесь можно добавить форматирование даты
-        description = transaction["description"]
-        masked_from = get_mask_account(transaction.get("from", ""))  # Маскируем номер счета
-        masked_to = get_mask_account(transaction.get("to", ""))  # Маскируем номер счета
-        print(f"{date}\t{description}\t{amount} {currency}\tОт: {masked_from}\tДо: {masked_to}")
+        if "operationAmount" in transaction:
+            amount = transaction["operationAmount"]["amount"]
+            currency = transaction["operationAmount"]["currency"]["name"]
+            date = transaction["date"]  # Здесь можно добавить форматирование даты
+            description = transaction["description"]
+            masked_from = (
+                get_mask_account(transaction.get("from", "")) if transaction.get("from") else "Не указано"
+            )  # Маскируем номер счета
+            masked_to = (
+                get_mask_account(transaction.get("to", "")) if transaction.get("to") else "Не указано"
+            )  # Маскируем номер счета
+            print(f"{date}\t{description}\t{amount} {currency}\tОт: {masked_from}\tДо: {masked_to}")
+        else:
+            print(f"Транзакция пропущена: отсутствует 'operationAmount' в записи с ID {transaction.get('id')}")
 
     if len(transactions) == 0:
         print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")

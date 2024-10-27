@@ -2,6 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
+# Игнорируем временные файлы Excel
+~$*
+
+# Игнорируем папки с кэшем
+__pycache__/
+*.pyc
 
 # C extensions
 *.so
