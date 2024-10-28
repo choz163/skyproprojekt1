@@ -11,11 +11,12 @@ def find_transactions_by_description(transactions, search_string):
     return result
 
 
-def count_transactions_by_category(transactions):
+def count_transactions_by_category(transactions: list[dict], categories: list[str]) -> dict[str, int]:
     """Подсчитывает и возвращает количество транзакций по категориям.
     Категории определяются по первому слову в описании транзакции."""
-    categories = Counter()
+    result = Counter()
     for transaction in transactions:
-        category = transaction["description"].split(" ")[0]
-        categories[category] += 1
-    return dict(categories)
+        category = transaction.get("description", "").split(" ")[0]  # Получаем первую часть описания как категорию
+        if category in categories:
+            result[category] += 1
+    return dict(result)

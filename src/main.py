@@ -20,14 +20,10 @@ def main() -> None:
     # Приветствие пользователя
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
 
-    # Пути к файлам
-    json_file_path: Path = Path(
-        "C:\\Users\\Komp\\PycharmProjects\\my_project_1\\pythonProject1\\data\\operations.json"
-    )
-    csv_file_path: Path = Path("C:\\Users\\Komp\\PycharmProjects\\my_project_1\\pythonProject1\\transactions.csv")
-    excel_file_path: Path = Path(
-        "C:\\Users\\Komp\\PycharmProjects\\my_project_1\\pythonProject1\\transactions_excel.xlsx"
-    )
+    # Пути к файлам (относительные пути)
+    json_file_path: Path = Path("../data/operations.json")
+    csv_file_path: Path = Path("../data/transactions.csv")
+    excel_file_path: Path = Path("../data/transactions_excel.xlsx")
 
     # Выбор файла
     while True:
@@ -57,8 +53,8 @@ def main() -> None:
     # Фильтрация по статусу
     while True:
         status: str = input(
-            "Введите статус, по которому необходимо выполнить фильтрацию."
-            " \nДоступные для фильтровки статусы: EXECUTED, CANCELED, PENDING\n"
+            "Введите статус, по которому необходимо выполнить фильтрацию. "
+            "\nДоступные для фильтровки статусы: EXECUTED, CANCELED, PENDING\n"
         )
         status = status.upper()
         if status in ["EXECUTED", "CANCELED", "PENDING"]:
@@ -66,19 +62,22 @@ def main() -> None:
         else:
             print('Статус операции "{}" недоступен.'.format(status))
 
-    transactions = list(filter_by_state(transactions, status))  # Преобразование в список
+    transactions = filter_by_state(transactions, status)
     print('Операции отфильтрованы по статусу "{}"'.format(status))
 
     # Сортировка по дате
     sort_by_date_input: str = input("Отсортировать операции по дате? Да/Нет\n").lower()
     if sort_by_date_input == "да":
-        sort_order: str = input("Отсортировать по возрастанию или по убыванию?\n").lower()
-        transactions = list(sort_by_date(transactions, sort_order))  # Преобразование в список
+        sort_order_input: str = input(
+            "Отсортировать по возрастанию или по убыванию? (введите 'возрастанию' или 'убыванию')\n"
+        ).lower()
+        sort_order: bool = True if sort_order_input == "возрастанию" else False
+        transactions = sort_by_date(transactions, sort_order)
 
     # Фильтрация по рублевым транзакциям
     filter_by_rub_input: str = input("Выводить только рублевые транзакции? Да/Нет\n").lower()
     if filter_by_rub_input == "да":
-        transactions = list(filter_by_currency(transactions, "руб."))  # Преобразование в список
+        transactions = filter_by_currency(transactions, "руб.")
 
     # Фильтрация по слову в описании
     filter_by_description_input: str = input(
