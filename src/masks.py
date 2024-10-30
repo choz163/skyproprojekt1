@@ -1,28 +1,10 @@
+import logging
+
+
 def get_mask_card_number(card_number: str) -> str:
     """Функция, которая маскирует номер банковской карты"""
-    hidden_number = card_number[:21] + "** ****" + card_number[-4:]
+    hidden_number = card_number[:21] + "******" + card_number[-4:]
     return hidden_number
-    # Скрываем символы номера карты
-    # hidden_chars = [20, 21, 22, 23, 24, 25]
-    # hidden_numbers = ""
-    # for number, char in enumerate(card_number):
-    #     if number in hidden_chars:
-    #         hidden_numbers += "*"
-    #     else:
-    #         hidden_numbers += char
-    # # Разбитие номера карты на блоки
-    # breaking = [
-    #     hidden_numbers[0:12],
-    #     hidden_numbers[12:16],
-    #     hidden_numbers[16:20],
-    #     hidden_numbers[20:24],
-    #     hidden_numbers[24:28],
-    # ]
-    #
-    # return " ".join(breaking)
-    # return hidden_numbers
-
-# print(get_mask_card_number("Visa Platinum 7000792289606361"))
 
 
 def get_mask_account(account_number: str) -> str:
@@ -30,4 +12,47 @@ def get_mask_account(account_number: str) -> str:
     return f"** {account_number[-4:]}"
 
 
-# print(get_mask_account("73654108430135874305"))
+# Настройка логирования
+logger = logging.getLogger("masks")
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler("logs/masks.log")
+file_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+# Пример использования функций с логированием
+if __name__ == "__main__":
+    # Успешный вызов функции маскировки номера карты
+    try:
+        card_number = "12345678901234567890"
+        masked_card_number = get_mask_card_number(card_number)
+        logger.info(f"Замаскирован номер карты: {masked_card_number}")  # Логируем успешное использование функции
+        print(masked_card_number)
+    except Exception as e:
+        logger.error(f"Ошибка при маскировке номера карты: {e}")  # Логируем ошибку
+
+    # Успешный вызов функции маскировки номера счета
+    try:
+        account_number = "12345678901234567890"
+        masked_account_number = get_mask_account(account_number)
+        logger.info(f"Замаскирован номер счета: {masked_account_number}")  # Логируем успешное использование функции
+        print(masked_account_number)
+    except Exception as e:
+        logger.error(f"Ошибка при маскировке номера счета: {e}")  # Логируем ошибку
+
+    # Пример вызова функции с ошибкой (некорректный номер карты)
+    try:
+        masked_card_number_error = get_mask_card_number("123")  # Слишком короткий номер
+        logger.info(f"Замаскирован номер карты: {masked_card_number_error}")  # Логируем успешное использование функции
+    except Exception as e:
+        logger.error(f"Ошибка при маскировке номера карты: {e}")  # Логируем ошибку
+
+    # Пример вызова функции с ошибкой (некорректный номер счета)
+    try:
+        masked_account_number_error = get_mask_account("12")  # Слишком короткий номер
+        logger.info(
+            f"Замаскирован номер счета: {masked_account_number_error}"
+        )  # Логируем успешное использование функции
+    except Exception as e:
+        logger.error(f"Ошибка при маскировке номера счета: {e}")  # Логируем ошибку
